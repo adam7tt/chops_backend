@@ -7,6 +7,7 @@ from .models import Citations
 # Create your views here.
 
 def home(request):
+    ''
     return render(request, 'api/home.html')
 
 # @staff_member_required
