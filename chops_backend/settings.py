@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-#import django_heroku
+import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,7 +25,7 @@ SECRET_KEY = 'vsd1n@z_b%wn5^xj7h2#q-$8g#-019+u$*-pfdbb*@q3w*!=3c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-env.zectunjjvb.us-west-2.elasticbeanstalk.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['django-env.zectunjjvb.us-west-2.elasticbeanstalk.com']
 
 CORS_ORIGIN_WHITELIST = [
         "http://localhost:8080",
@@ -83,26 +83,21 @@ WSGI_APPLICATION = 'chops_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-#DATABASES = {
-#   'default': {
-#       'ENGINE': 'django.db.backends.mysql',
-#       'NAME': 'chops',
-#       'USER': 'admin',
-#       'PASSWORD': 'Redandgreenchristmaspajamas',
-#       'HOST': 'db-chops.ca4hnifnf4lg.us-west-1.rds.amazonaws.com',
-#       'PORT': 3306,
-#   },
-#   'options': {
-#       'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#   }
-#}
-
 DATABASES = {
-    'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR , 'db.sqlite3')
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'chops',
+       'USER': 'admin',
+       'PASSWORD': 'Redandgreenchristmaspajamas',
+       'HOST': 'db-chops.ca4hnifnf4lg.us-west-1.rds.amazonaws.com',
+       'PORT': 3306,
+   },
+   'options': {
+       'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+   }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -148,4 +143,4 @@ STATIC_URL = '/static/'
 #     os.path.join(PROJECT_ROOT, 'static'),
 # )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-#django_heroku.settings(locals())
+django_heroku.settings(locals())
