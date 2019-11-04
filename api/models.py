@@ -1,102 +1,60 @@
 from django.db import models
 
-class Citations(models.Model):
-    # '''
-    #     Collaborators field may be taken out
-    # '''
-    abstract = models.CharField('abstract', max_length=10000, blank=False)
-    collaborators = models.CharField('collaborator', max_length=255)
+class Academic(models.Model):
+#    academic_id = models.AutoField('academic_id', primary_key=True)
+    name = models.CharField('name', max_length=255, blank=False)
+    citations = models.ManyToManyField('Citation')
+    university = models.ForeignKey('University', on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.university)
+
+class Citation(models.Model):
+    citation_id = models.AutoField('citation_id', primary_key=True)
     title = models.CharField('title', max_length=255, blank=False)
     date = models.DateField('date', blank=False)
+    abstract = models.TextField('abstract', blank=False)
     paper = models.TextField('paper', blank=False)
 
-    orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
-    doi = models.CharField('doi', max_length=255, unique=True, default=None)
+    #collaborators = models.CharField('collaborator', max_length=255)
+#    keywords = models.ManyToManyField('Keyword')
 
-    date_created = models.DateTimeField('date_created', auto_now=True)
-    word_occurrences: models.TextField('word_occurrences')
+    #orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
+    #doi = models.CharField('doi', max_length=255, unique=True, default=None)
 
-    def __str__(self):
-        return 'Citation\n\tTitle: {}\n\tDate: {}'.format(self.title, self.date)
-
-class Keywords(models.Model):
-    name = models.CharField('name', max_length=255, blank=False)
+    date_entered = models.DateTimeField('date_entered', auto_now=True)
+    #word_occurrences: models.TextField('word_occurrences')
 
     def __str__(self):
-        return 'Keyword\n\tname: {}'.format(self.name)
+        return self.title
 
-
-class KeywordsCitations(models.Model):
-    # '''
-    #     IMPORTANT
-    #         Django doens't let us do Composite PKs
-    #         so we need to change DB schema to avoid duplicates
-    # '''
-    keyword_id = models.ForeignKey(Keywords, on_delete=models.DO_NOTHING, blank=False)
-    citation_id = models.ForeignKey(Citations, on_delete=models.DO_NOTHING, blank=False)
+class Keyword(models.Model):
+#    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
 
     def __str__(self):
-        return 'KeywordCitation\n\tkeyword_id: {}\n\tcitation_id {}'.format(self.keyword_id, self.citation_id)
-
-class Academics(models.Model):
-    name = models.CharField('name', max_length=255, blank=False)
-
-    def __str__(self):
-        # ideally outputs the academic name and citation name
-        return 'Academic\n\tid: {}\n\tname:'.format(self.id, self.name)
-
-class AcademicCitations(models.Model):
-    # '''
-    #     IMPORTANT
-    #         Django doens't let us do Composite PKs
-    #         so we need to change DB schema to avoid duplicates
-    # '''
-    academic_id = models.ForeignKey(Academics, on_delete=models.DO_NOTHING, blank=False)
-    citation_id = models.ForeignKey(Citations, on_delete=models.DO_NOTHING, blank=False)
-
-    def __str__(self):
-        # ideally outputs the academic name and citation name
-        return 'AcademicCitation\n\tacademic_id: {}\n\tcitation_id: {}'.format(self.academic_id, self.citation_id)
-
-
-class Users(models.Model):
-    academic_id = models.ForeignKey(Academics, on_delete=models.DO_NOTHING, blank=False)
-    username = models.CharField('username', max_length=255, blank=False)
-    email = models.EmailField('email', blank=False)
-    password = models.CharField('password', max_length=255, blank=False)
-    date_create = models.DateTimeField('date_created', auto_now=True)
-
-    def __str__(self):
-        return 'User\n\tname: {}\n\temail: {}'.format(self.username, self.email)
+        return self.name
 
 class University(models.Model):
-    name = models.CharField('name', max_length=255, blank=False)
+#    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
 
     def __str__(self):
-        return 'University\n\tname: {}'.format(self.name)
+        return self.name
 
-class Schools(models.Model):
-    name = models.CharField('name', max_length=255, blank=False)
-    university_id = models.ForeignKey(University, on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return 'School\n\tid: {}\n\tname: {}\n\tuniv_id: {}'.format(self.id, self.name, self.university_id)
-
-class SchoolsAcademics(models.Model):
-    # '''
-    #     IMPORTANT
-    #         Django doens't let us do Composite PKs
-    #         so we need to change DB schema to avoid duplicates
-    # '''
-    school_id = models.ForeignKey(Schools, on_delete=models.DO_NOTHING, blank=False)
-    academic_id = models.ForeignKey(Academics, on_delete=models.DO_NOTHING, blank=False)
+class Department(models.Model):
+    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
 
     def __str__(self):
-        return 'SchoolsAcademics\n\tschool_id: {}\n\tacademic_id: {}'.format(self.school_id, self.academic_id)
+        return self.name
+#    school = models.ForeignKey(School, on_delete=models.CASCADE, blank=False)
 
-class Departments(models.Model):
-    name = models.CharField('name', max_length=255, blank=False)
-    school_id = models.ForeignKey(Schools, on_delete=models.DO_NOTHING, blank=False)
+#class School(models.Model):
+#    name = models.CharField('name', max_length=255, blank=False)
+#    university_id = models.ForeignKey(University, on_delete=models.DO_NOTHING)
 
-    def __str__(self):
-        return 'Departments\n\tname: {}'.format(self.name)
+#class User(models.Model):
+#    academic_id = models.ForeignKey(Academics, on_delete=models.DO_NOTHING, blank=False)
+#    username = models.CharField('username', max_length=255, blank=False)
+#    email = models.EmailField('email', blank=False)
+#    password = models.CharField('password', max_length=255, blank=False)
+#    date_create = models.DateTimeField('date_created', auto_now=True)
