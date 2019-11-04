@@ -1,7 +1,7 @@
 from django.db import models
 
 class Academic(models.Model):
-#    academic_id = models.AutoField('academic_id', primary_key=True)
+    academic_id = models.AutoField('academic_id', primary_key=True)
     name = models.CharField('name', max_length=255, blank=False)
     citations = models.ManyToManyField('Citation')
     university = models.ForeignKey('University', on_delete=models.CASCADE)
@@ -18,7 +18,7 @@ class Citation(models.Model):
     paper = models.TextField('paper', blank=False)
 
     #collaborators = models.CharField('collaborator', max_length=255)
-#    keywords = models.ManyToManyField('Keyword')
+    keywords = models.ManyToManyField('Keyword')
 
     #orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
     #doi = models.CharField('doi', max_length=255, unique=True, default=None)
@@ -30,13 +30,13 @@ class Citation(models.Model):
         return self.title
 
 class Keyword(models.Model):
-#    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
+    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
 
     def __str__(self):
         return self.name
 
 class University(models.Model):
-#    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
+    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
 
     def __str__(self):
         return self.name
