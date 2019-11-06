@@ -14,6 +14,7 @@ def home(request):
 
 class AcademicListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     serializer_class = AcademicSerializer
+    queryset = Academic.objects.all()
     filter_class = AcademicFilter
     filter_backends = [DjangoFilterBackend]
 
