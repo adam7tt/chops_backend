@@ -18,24 +18,6 @@ class AcademicListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     filter_class = AcademicFilter
     filter_backends = [DjangoFilterBackend]
 
-#    def get_queryset(self):
-#        queryset = Academic.objects.all()
-#
-#        kwargs = dict()
-#        kwargs['name'] = self.request.query_params.get('professor', None)
-#        kwargs['university__name'] = self.request.query_params.get('university', None)
-#        kwargs['department__name'] = self.request.query_params.get('department', None)
-#        kwargs['citations__keywords__name'] = self.request.query_params.getlist('keywords', None)
-#
-#        keywords=kwargs['citations__keywords__name']
-#        print(type(keywords), keywords)
-#
-#        for query in kwargs.items():
-#            if query[1] is not None:
-#                queryset = queryset.filter(**dict([query]))
-#
-#        return queryset
-
     def perform_create(self, serializer):
         serializer.save()
 
@@ -45,6 +27,8 @@ class AcademicListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class CitationListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     queryset = Citation.objects.all()
     serializer_class = CitationSerializer
+    filter_class = CitationFilter
+    filter_backends = [DjangoFilterBackend]
 
     def perform_create(self, serializer):
         serializer.save()
