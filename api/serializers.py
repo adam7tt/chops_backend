@@ -1,40 +1,37 @@
 from rest_framework import serializers
 from .models import *
 
-
-class CitationsSerializer(serializers.ModelSerializer):
-
+class AcademicSerializer(serializers.ModelSerializer):
 
     class Meta:
+        model = Academic
+        fields = "__all__"
 
-        model = Citations
-        fields = ('abstract','collaborators', 'title', 'date', 'paper')
-      #  read_only_fields = ('abstract','collaborators', 'title', 'date', 'paper')
+class CitationSerializer(serializers.ModelSerializer):
 
-# class KeywordsSerializer(serializers.ModelSerializer):
-#
-#
-#     class Meta:
-#
-#         model = Keywords
-#         fields = ('name')
-#
-# class AcademicsSerializer(serializers.ModelSerializer):
-#
-#
-#     class Meta:
-#
-#         model = Academics
-#         fields = ('name')
-#
-# class UniversitySerializer(serializers.ModelSerializer):
-#
-#
-#     class Meta:
-#
-#         model = University
-#         fields = ('name')
-#
+    class Meta:
+        model = Citation
+        fields = "__all__"
+
+class KeywordSerializer(serializers.ModelSerializer):
+
+     class Meta:
+        model = Keyword
+        fields = "__all__"
+
+
+class UniversitySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = University
+        fields = "__all__"
+
+class DepartmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Department
+        fields = "__all__"
+
 # class SchoolsSerializer(serializers.ModelSerializer):
 #
 #
@@ -43,10 +40,3 @@ class CitationsSerializer(serializers.ModelSerializer):
 #         model = Schools
 #         fields = ('name')
 #
-# class DepartmentsSerializer(serializers.ModelSerializer):
-#
-#
-#     class Meta:
-#
-#         model = Departments
-#         fields = ('name')
