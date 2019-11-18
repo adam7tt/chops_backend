@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-import django_heroku
+#import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,13 +25,19 @@ SECRET_KEY = 'vsd1n@z_b%wn5^xj7h2#q-$8g#-019+u$*-pfdbb*@q3w*!=3c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-env.zectunjjvb.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = [
+        'https://django-env.zectunjjvb.us-west-2.elasticbeanstalk.com',
+        'localhost',
+        '127.0.0.1'
+        ]
 
 CORS_ORIGIN_WHITELIST = [
         "http://localhost:8080",
         "http://127.0.0.1:8080",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
         'https://sharp-montalcini-a509ea.netlify.com'
-]
+    ]
 
 # Application definition
 
@@ -149,4 +155,4 @@ STATIC_URL = '/static/'
 #     os.path.join(PROJECT_ROOT, 'static'),
 # )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-django_heroku.settings(locals())
+#django_heroku.settings(locals())
