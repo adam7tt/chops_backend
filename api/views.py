@@ -15,7 +15,7 @@ class AcademicListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     filter_class = AcademicFilter
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['name', 'university__name', 'department__name', 'citations__keywords__name']
-
+    
     def perform_create(self, serializer):
         serializer.save()
 
@@ -27,7 +27,7 @@ class CitationListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     serializer_class = CitationSerializer
     filter_class = CitationFilter
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ['title', 'date__year', 'keywords__name']
+    search_fields = ['title', 'date', 'keywords__name']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -38,6 +38,8 @@ class CitationListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class KeywordListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     queryset = Keyword.objects.all()
     serializer_class = KeywordSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['name']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -48,6 +50,8 @@ class KeywordListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class UniversityListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     queryset = University.objects.all()
     serializer_class = UniversitySerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['name']
 
     def perform_create(self, serializer):
         serializer.save()
@@ -58,6 +62,8 @@ class UniversityListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class DepartmentListAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['name']
 
     def perform_create(self, serializer):
         serializer.save()

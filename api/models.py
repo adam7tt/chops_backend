@@ -1,8 +1,14 @@
 from django.db import models
 
+"""
+    Note that Django
+        - gives each model a primary key id automatically
+        - blank=False is by default, no need to add it
+    https://docs.djangoproject.com/en/2.2/topics/db/models/#automatic-primary-key-fields
+"""
+
 class Academic(models.Model):
-    academic_id = models.AutoField('academic_id', primary_key=True)
-    name = models.CharField('name', max_length=255, blank=False)
+    name = models.CharField('name', max_length=255)
     citations = models.ManyToManyField('Citation')
     university = models.ForeignKey('University', on_delete=models.CASCADE)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
@@ -11,11 +17,10 @@ class Academic(models.Model):
         return '{} ({})'.format(self.name, self.university)
 
 class Citation(models.Model):
-    citation_id = models.AutoField('citation_id', primary_key=True)
-    title = models.CharField('title', max_length=255, blank=False)
-    date = models.DateField('date', blank=False)
-    abstract = models.TextField('abstract', blank=False)
-    paper = models.TextField('paper', blank=False)
+    title = models.CharField('title', max_length=255)
+    date = models.DateField('date')
+    abstract = models.TextField('abstract')
+    paper = models.TextField('paper')
 
     #collaborators = models.CharField('collaborator', max_length=255)
     keywords = models.ManyToManyField('Keyword')
@@ -30,19 +35,19 @@ class Citation(models.Model):
         return self.title
 
 class Keyword(models.Model):
-    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
+    name = models.CharField('name', max_length=255)
 
     def __str__(self):
         return self.name
 
 class University(models.Model):
-    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
+    name = models.CharField('name', max_length=255)
 
     def __str__(self):
         return self.name
 
 class Department(models.Model):
-    name = models.CharField('name', max_length=255, primary_key=True, blank=False)
+    name = models.CharField('name', max_length=255)
 
     def __str__(self):
         return self.name
