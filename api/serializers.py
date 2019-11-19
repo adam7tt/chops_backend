@@ -12,11 +12,11 @@ class AcademicSerializer(serializers.ModelSerializer):
         many=False,
         read_only=True
      )
-    citations = serializers.SlugRelatedField(
-        slug_field='title',
-        many=True,
-        read_only=True
-     )
+    # citations = serializers.SlugRelatedField(
+    #     slug_field='title',
+    #     many=True,
+    #     read_only=True
+    #  )
     class Meta:
         model = Academic
         fields = "__all__"
