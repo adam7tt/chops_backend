@@ -3,6 +3,7 @@ from .models import *
 
 class AcademicFilter(django_filters.FilterSet):
 
+    id = django_filters.NumberFilter('academic_id')
     professor = django_filters.CharFilter('name', lookup_expr='iexact')
     university = django_filters.CharFilter('university__name', lookup_expr='iexact')
     department = django_filters.CharFilter('department__name', lookup_expr='iexact')
@@ -17,10 +18,12 @@ class AcademicFilter(django_filters.FilterSet):
 
 class CitationFilter(django_filters.FilterSet):
 
+    id = django_filters.NumberFilter('citation_id')
     title = django_filters.CharFilter('title', lookup_expr='icontains')
     year = django_filters.NumberFilter(field_name='date', lookup_expr='year')
     keywords = django_filters.ModelMultipleChoiceFilter('keywords__name', lookup_expr='iexact',
             queryset=Keyword.objects.all(), conjoined=True)
+    professor = django_filters.CharFilter('academic__name', lookup_expr='iexact')
 
     class Meta:
         model = Citation
