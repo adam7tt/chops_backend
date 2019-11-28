@@ -17,19 +17,16 @@ class Academic(models.Model):
         return '{} ({})'.format(self.name, self.university)
 
 class Citation(models.Model):
-    title = models.CharField('title', max_length=255)
-    date = models.DateField('date')
-    abstract = models.TextField('abstract')
-    paper = models.TextField('paper')
-
-    #collaborators = models.CharField('collaborator', max_length=255)
+    title = models.BinaryField('title')
+    url = models.CharField('url', max_length=256)
     keywords = models.ManyToManyField('Keyword')
 
-    #orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
-    #doi = models.CharField('doi', max_length=255, unique=True, default=None)
+    # orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
+    # doi = models.CharField('doi', max_length=255, unique=True, default=None)
 
+    date_published = models.DateTimeField('date_published')
     date_entered = models.DateTimeField('date_entered', auto_now=True)
-    #word_occurrences: models.TextField('word_occurrences')
+    # word_occurrences: models.TextField('word_occurrences')
 
     def __str__(self):
         return self.title

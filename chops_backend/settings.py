@@ -90,26 +90,27 @@ WSGI_APPLICATION = 'chops_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'chops',
-#        'USER': 'admin',
-#        'PASSWORD': 'Redandgreenchristmaspajamas',
-#        'HOST': 'db-chops.ca4hnifnf4lg.us-west-1.rds.amazonaws.com',
-#        'PORT': 3306,
-#    },
-#    'options': {
-#        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#    }
-# }
-
 DATABASES = {
    'default': {
-           'ENGINE': 'django.db.backends.sqlite3',
-           'NAME': os.path.join(BASE_DIR , 'db.sqlite3')
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'chops',
+       'USER': 'admin',
+       'PASSWORD': 'Redandgreenchristmaspajamas',
+       'HOST': 'db-chops.ca4hnifnf4lg.us-west-1.rds.amazonaws.com',
+       'PORT': 3306,
+   },
+   'options': {
+       'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
    }
 }
+
+
+# DATABASES = {
+#    'default': {
+#            'ENGINE': 'django.db.backends.sqlite3',
+#            'NAME': os.path.join(BASE_DIR , 'db.sqlite3')
+#    }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -141,7 +142,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -156,3 +157,8 @@ STATIC_URL = '/static/'
 # )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #django_heroku.settings(locals())
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 30
+}
