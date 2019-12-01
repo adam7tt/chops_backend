@@ -17,7 +17,7 @@ class Academic(models.Model):
         return '{} ({})'.format(self.name, self.university)
 
 class Citation(models.Model):
-    title = models.BinaryField('title')
+    title = models.TextField('title')
     url = models.CharField('url', max_length=256)
     keywords = models.ManyToManyField('Keyword')
 
