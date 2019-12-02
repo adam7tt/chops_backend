@@ -23,7 +23,8 @@ class CitationFilter(django_filters.FilterSet):
     year = django_filters.NumberFilter(field_name='date', lookup_expr='year')
     keyword = django_filters.CharFilter('keywords__name', lookup_expr='icontains')
     keyword_id = django_filters.CharFilter('keywords__id', lookup_expr='iexact')
-    professor = django_filters.CharFilter('academic__name', lookup_expr='iexact')
+    # academic = django_filters.CharFilter('academic__name', lookup_expr='iexact')
+    academic_id = django_filters.CharFilter('academic__id', lookup_expr='iexact')
 
     class Meta:
         model = Citation

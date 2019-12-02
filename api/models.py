@@ -10,6 +10,7 @@ from django.db import models
 class Academic(models.Model):
     name = models.CharField('name', max_length=255)
     citations = models.ManyToManyField('Citation')
+    # citations = models.ManyToManyField('Citation', through='AcademicCitation')
     university = models.ForeignKey('University', on_delete=models.CASCADE)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
 
@@ -24,12 +25,22 @@ class Citation(models.Model):
     # orcid = models.CharField('orcid', max_length=255, unique=True, default=None)
     # doi = models.CharField('doi', max_length=255, unique=True, default=None)
 
+    # academics = models.ManyToManyField('Academic', through='AcademicCitation')
+
     date_published = models.DateTimeField('date_published')
     date_entered = models.DateTimeField('date_entered', auto_now=True)
     # word_occurrences: models.TextField('word_occurrences')
 
     def __str__(self):
         return self.title
+
+# class AcademicCitation(models.Model):
+#     academic_id = models.ForeignKey(Academic, on_delete=models.DO_NOTHING, db_column='academic_id')
+#     citation_id = models.ForeignKey(Citation, on_delete=models.DO_NOTHING, db_column='citation_id')
+
+#     class Meta:
+#         db_table = 'api_academic_citations'
+#         # auto_created = Model1
 
 class Keyword(models.Model):
     name = models.CharField('name', max_length=255)
