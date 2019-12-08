@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+import json
 
 class AcademicSerializer(serializers.ModelSerializer):
     university = serializers.SlugRelatedField(
@@ -17,9 +18,15 @@ class AcademicSerializer(serializers.ModelSerializer):
     #     many=True,
     #     read_only=True
     #  )
+
+    wordcloud = serializers.SerializerMethodField()
+
     class Meta:
         model = Academic
         fields = "__all__"
+
+    def get_wordcloud(self, obj):
+        return json.loads(obj.wordcloud)
 
 class CitationSerializer(serializers.ModelSerializer):
     keywords = serializers.SlugRelatedField(

@@ -13,10 +13,11 @@ class Academic(models.Model):
     # citations = models.ManyToManyField('Citation', through='AcademicCitation')
     university = models.ForeignKey('University', on_delete=models.CASCADE)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    wordcloud = models.TextField('wordcloud', max_length=2048, default=None)
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.university)
-
+    
 class Citation(models.Model):
     title = models.TextField('title')
     url = models.CharField('url', max_length=256)
@@ -29,7 +30,6 @@ class Citation(models.Model):
 
     date_published = models.DateTimeField('date_published')
     date_entered = models.DateTimeField('date_entered', auto_now=True)
-    # word_occurrences: models.TextField('word_occurrences')
 
     def __str__(self):
         return self.title
