@@ -6,7 +6,7 @@ import os
 connection = {
         'NAME': 'chops',
         'USER': 'admin',
-        'PASSWORD': 'Redandgreenchristmaspajamas',
+        'PASSWORD': 'Hummusscrewdriverandaplushdraft',
         'HOST': 'db-chops.ca4hnifnf4lg.us-west-1.rds.amazonaws.com',
         'PORT': 3306
         }

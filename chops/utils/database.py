@@ -52,3 +52,6 @@ class UniqueMixin(object):
             cls,
             arg, kw
         )
+
+def nice_str_date(d):
+    return "{}-{}-{}".format(d.month, d.day, d.year)

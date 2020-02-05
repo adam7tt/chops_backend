@@ -4,7 +4,7 @@ from sqlalchemy.dialects import mysql
 from sqlalchemy.orm import relationship
 
 from chops.flask_extensions import db
-from chops.utils.database import _unique, UniqueMixin
+from chops.utils.database import _unique, UniqueMixin, nice_str_date
 
 AcademicCitation = db.Table('api_academic_citations',
     db.Column('id', db.Integer, primary_key=True),
@@ -15,7 +15,8 @@ AcademicCitation = db.Table('api_academic_citations',
 class Academic(db.Model, UniqueMixin):
     __tablename__ = 'api_academic'  # if you use base it is obligatory
     id = Column(Integer, primary_key=True)  # obligatory
-    name = Column(String(255))
+    name = Column(String(256))
+    # email = Column(String(256))
     department_id = Column(Integer, ForeignKey("api_department.id"))
     university_id = Column(Integer, ForeignKey("api_university.id"))
     wordcloud = Column(mysql.MEDIUMTEXT)
@@ -25,6 +26,15 @@ class Academic(db.Model, UniqueMixin):
     citations = relationship("Citation", secondary=AcademicCitation, back_populates='academics')
 
     __table_args__ = (UniqueConstraint('name', 'department_id', 'university_id'),)
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'department': self.department.name,
+            'university': self.university.name,
+            'citations': [c.json() for c in self.citations]
+        }
 
     def unique_hash(self, *arg, **kws):
         # print(arg, kws)
@@ -57,6 +67,13 @@ class Citation(db.Model, UniqueMixin):
     keywords = db.relationship("Keyword", secondary=CitationKeywords)
 
     __table_args__ = (db.UniqueConstraint('title', 'url'),)
+
+    def json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'date_published': str(self.date_published)
+        }
 
     def unique_hash(self, *arg, **kws):
         return (kws['title'], kws['url'])
@@ -101,6 +118,12 @@ class Department(db.Model, UniqueMixin):
     name = Column(String(256))
     __table_args__ = (UniqueConstraint('name'),)
 
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
     def unique_hash(self, *arg, **kws):
         return (kws['name'])
 
@@ -113,6 +136,12 @@ class University(db.Model, UniqueMixin):
     id = Column(Integer, primary_key=True)  # obligatory
     name = Column(String(256))
     __table_args__ = (UniqueConstraint('name'),)
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
     def unique_hash(self, *arg, **kws):
         return (kws['name'])
