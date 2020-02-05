@@ -3,5 +3,5 @@
 ## How to run the api
 
 ```
-python -m api
+python -m chops
 ```
