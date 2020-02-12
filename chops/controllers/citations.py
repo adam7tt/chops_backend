@@ -32,7 +32,7 @@ def get_academic(args):
         return jsonify([r() for r in ret])
     elif 'academic_id' in args:
         ret = db.session.query(Citation).join(Citation.academics).filter(Academic.id == args['academic_id'])
-        return jsonify([r() for r in ret])
+        return jsonify({'results': [r() for r in ret]})
     elif 'search' in args:
         ret = db.session.query(Citation) \
             .join(Citation.keywords) \
