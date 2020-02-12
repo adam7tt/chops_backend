@@ -5,19 +5,22 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 from marshmallow import Schema
-from chops.flask_extensions import db
+
+from flask import current_app as api
+from chops.core.flask_extensions import db
 from chops.database.models import Academic
 
 blueprint = Blueprint('academics', __name__)
 
 academic_args = {
-        'id': fields.Integer(),
-        'ids': fields.DelimitedList(fields.Integer(), delimiter=','),
-        'name': fields.Str(),
-        'department': fields.Str(),
-        'university': fields.Str(),
-        'search': fields.Str()
-        }
+    'page': fields.Integer(missing=1),
+    'id': fields.Integer(),
+    'ids': fields.DelimitedList(fields.Integer(), delimiter=','),
+    'name': fields.Str(),
+    'department': fields.Str(),
+    'university': fields.Str(),
+    'search': fields.Str()
+}
 
 @blueprint.route('/', methods=['GET', 'POST'])
 @use_args(academic_args)
@@ -36,8 +39,9 @@ def get_academic(args):
     elif 'search' in args:
         ret = db.session.query(Academic)\
             .filter(Academic.name.contains(args['search']))\
-            .all()
-        return jsonify([r() for r in ret])
+            .paginate(args['page'], api.config['POSTS_PER_PAGE'], False)\
+            .items
+        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
     else:
         ret = db.session.query(Academic).all()
         return jsonify([r() for r in ret])

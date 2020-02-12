@@ -5,7 +5,7 @@ from sqlalchemy import Table, Column, Integer, ForeignKey, String, DateTime, Lar
 from sqlalchemy.dialects import mysql
 from sqlalchemy.orm import relationship
 
-from chops.flask_extensions import db
+from chops.core.flask_extensions import db
 from chops.utils.database import _unique, UniqueMixin, nice_str_date
 
 AcademicCitation = db.Table('api_academic_citations',

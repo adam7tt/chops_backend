@@ -5,19 +5,20 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 from marshmallow import Schema
-from chops.flask_extensions import db
+from chops.core.flask_extensions import db
 from chops.database.models import (Citation, Academic, Keyword)
 
 blueprint = Blueprint('citations', __name__)
 
 citation_args = {
-        'id': fields.Integer(),
-        'ids': fields.DelimitedList(fields.Integer(), delimiter=','),
-        'keywords': fields.DelimitedList(fields.Integer(), delimiter=','),
-        # 'academics_id': fields.DelimitedList(fields.Integer(), delimiter=','),
-        'academic_id': fields.Integer(),
-        'search': fields.Str()
-        }
+    'page': fields.Integer(missing=1),
+    'id': fields.Integer(),
+    'ids': fields.DelimitedList(fields.Integer(), delimiter=','),
+    'keywords': fields.DelimitedList(fields.Integer(), delimiter=','),
+    # 'academics_id': fields.DelimitedList(fields.Integer(), delimiter=','),
+    'academic_id': fields.Integer(),
+    'search': fields.Str()
+}
 
 @blueprint.route('/', methods=['GET', 'POST'])
 @use_args(citation_args)
