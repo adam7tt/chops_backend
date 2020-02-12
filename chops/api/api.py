@@ -7,7 +7,7 @@ import logging
 from flask import Flask
 
 from chops.flask_extensions import db
-from chops.api import academics
+from chops.api import (academics, citations)
 
 def create_api(config_object='chops.settings'):
     api = Flask('.'.join(__name__.split('.')[:-1]))
@@ -23,6 +23,7 @@ def register_extensions(api):
 
 def register_blueprints(api):
     api.register_blueprint(academics.blueprint, url_prefix='/academics')
+    api.register_blueprint(citations.blueprint, url_prefix='/citations')
     return None
 
 def configure_logger(api):

@@ -23,19 +23,21 @@ academic_args = {
 @use_args(academic_args)
 def get_academic(args):
     ret = []
-    if 'search' in args:
-        ret = db.session.query(Academic)\
-            .filter(Academic.name.contains(args['search']))\
-            .filter(Academic.university.contains(args['search']))\
-            .all()
-        return jsonify([r.json() for r in ret])
     if 'id' in args:
         ret = Academic.query.filter_by(id=args['id']).first()
-        return jsonify(ret.json())
-    if 'ids' in args:
+        return jsonify(ret())
+    elif 'ids' in args:
         ret = db.session.query(Academic).filter(Academic.id.in_(args['ids'])).all()
-        return jsonify([r.json() for r in ret])
-    if 'name' in args:
+        return jsonify([r() for r in ret])
+    elif 'name' in args:
         # ret = Academic.query.filter_by(name=args['name']).all()
         ret = db.session.query(Academic).filter(Academic.name.contains(args['name'])).all()
-        return jsonify([r.json() for r in ret])
+        return jsonify([r() for r in ret])
+    elif 'search' in args:
+        ret = db.session.query(Academic)\
+            .filter(Academic.name.contains(args['search']))\
+            .all()
+        return jsonify([r() for r in ret])
+    else:
+        ret = db.session.query(Academic).all()
+        return jsonify([r() for r in ret])

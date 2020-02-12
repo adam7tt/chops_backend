@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import datetime
+
 from sqlalchemy import Table, Column, Integer, ForeignKey, String, DateTime, LargeBinary, UniqueConstraint
 from sqlalchemy.dialects import mysql
 from sqlalchemy.orm import relationship
@@ -27,14 +29,18 @@ class Academic(db.Model, UniqueMixin):
 
     __table_args__ = (UniqueConstraint('name', 'department_id', 'university_id'),)
 
-    def json(self):
+    def __call__(self):
         return {
             'id': self.id,
             'name': self.name,
             'department': self.department.name,
             'university': self.university.name,
-            'citations': [c.json() for c in self.citations]
+            'citations': [c.id for c in self.citations]
+            # 'citations': [c.json() for c in self.citations]
         }
+
+    def __str__(self):
+        return "<Academic(id={}, name={}, department={}, university={})>".format(self.id, self.name, self.department.name, self.university.name)
 
     def unique_hash(self, *arg, **kws):
         # print(arg, kws)
@@ -47,33 +53,38 @@ class Academic(db.Model, UniqueMixin):
             .filter(self.department_id == kws['department_id']) \
             .filter(self.university_id == kws['university_id'])
 
-
 CitationKeywords = db.Table('api_citation_keywords',
     db.Column('id', db.Integer, primary_key=True),
     db.Column('citation_id', db.Integer, db.ForeignKey('api_citation.id')),
     db.Column('keyword_id', db.Integer, db.ForeignKey('api_keyword.id')),
 )
 
+from sqlalchemy.sql import func
 
 class Citation(db.Model, UniqueMixin):
     __tablename__ = 'api_citation'  # if you use base it is obligatory
     id = db.Column(db.Integer, primary_key=True)  # obligatory
     title = db.Column(mysql.LONGTEXT)
     url = db.Column(db.String(256))
-    date_published = db.DateTime()
-    date_entered = db.DateTime()
+    date_published = db.Column(db.DateTime())
+    date_entered = db.Column(db.DateTime())
 
     academics = db.relationship("Academic", secondary=AcademicCitation, back_populates='citations')
     keywords = db.relationship("Keyword", secondary=CitationKeywords)
 
     __table_args__ = (db.UniqueConstraint('title', 'url'),)
 
-    def json(self):
+    def __call__(self):
         return {
             'id': self.id,
+            'academics_id': [a.id for a in self.academics],
             'title': self.title,
-            'date_published': str(self.date_published)
+            'date_published': self.date_published.strftime("%d/%m/%Y"),
+            'keywords': [k.name for k in self.keywords]
         }
+
+    def __str__(self):
+        return "<Citation(id={}, title={}, academics={})>".format(self.id, self.title, [a.name for a in self.academics])
 
     def unique_hash(self, *arg, **kws):
         return (kws['title'], kws['url'])
@@ -118,7 +129,7 @@ class Department(db.Model, UniqueMixin):
     name = Column(String(256))
     __table_args__ = (UniqueConstraint('name'),)
 
-    def json(self):
+    def __call__(self):
         return {
             'id': self.id,
             'name': self.name
@@ -137,7 +148,7 @@ class University(db.Model, UniqueMixin):
     name = Column(String(256))
     __table_args__ = (UniqueConstraint('name'),)
 
-    def json(self):
+    def __call__(self):
         return {
             'id': self.id,
             'name': self.name
