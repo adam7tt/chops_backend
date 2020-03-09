@@ -8,7 +8,8 @@ from marshmallow import Schema
 
 from flask import current_app as api
 from chops.core.flask_extensions import db
-from chops.database.models import Academic
+from chops.database.models import Academic, Citation, CitationText, AcademicCitation
+from chops.utils.misc import process_word_count
 
 blueprint = Blueprint('academics', __name__)
 
@@ -20,6 +21,13 @@ academic_args = {
     'department': fields.Str(),
     'university': fields.Str(),
     'search': fields.Str()
+}
+
+wordcloud_args = {
+    'id': fields.Integer(),
+    'min_ocurrences': fields.Integer(missing=5),
+    'min_word_length': fields.Integer(missing=5),
+    'limit': fields.Integer(missing=50)
 }
 
 @blueprint.route('/', methods=['GET', 'POST'])
@@ -45,3 +53,15 @@ def get_academic(args):
     else:
         ret = db.session.query(Academic).all()
         return jsonify([r() for r in ret])
+
+@blueprint.route('/wordcloud/', methods=['GET', 'POST'])
+@use_args(wordcloud_args)
+def get_academic_wordcloud(args):
+    ret = []
+    if 'id' in args:
+        ret = db.session\
+                .query(CitationText)\
+                .filter(CitationText.citation_id == args['id'])\
+                .all()
+        return jsonify({'result': process_word_count([r() for r in ret], min_ocurrences=args['min_ocurrences'], min_word_length=args['min_word_length'], limit=args['limit'])})
+    return []
