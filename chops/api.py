@@ -6,7 +6,7 @@ import logging
 import argparse
 from pathlib import Path
 from flask import Flask
-
+from flask_cors import CORS
 from chops.core.flask_extensions import db
 from chops.controllers import (academics, citations)
 
@@ -20,6 +20,8 @@ def create_api(config_object='chops.core.settings'):
     register_extensions(api)
     register_blueprints(api)
     configure_logger(api)
+
+    CORS(api)
     return api
 
 def register_extensions(api):
