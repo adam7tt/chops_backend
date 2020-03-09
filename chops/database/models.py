@@ -21,13 +21,13 @@ class Academic(db.Model, UniqueMixin):
     # email = Column(String(256))
     department_id = Column(Integer, ForeignKey("api_department.id"))
     university_id = Column(Integer, ForeignKey("api_university.id"))
-    wordcloud = Column(mysql.MEDIUMTEXT)
+    # wordcloud = Column(mysql.MEDIUMTEXT)
 
     department = relationship("Department")
     university = relationship("University")
     citations = relationship("Citation", secondary=AcademicCitation, back_populates='academics')
 
-    __table_args__ = (UniqueConstraint('name', 'department_id', 'university_id'),)
+    __table_args__ = (db.UniqueConstraint('name', 'department_id', 'university_id'),)
 
     def __call__(self):
         return {
@@ -58,6 +58,30 @@ CitationKeywords = db.Table('api_citation_keywords',
     db.Column('citation_id', db.Integer, db.ForeignKey('api_citation.id')),
     db.Column('keyword_id', db.Integer, db.ForeignKey('api_keyword.id')),
 )
+
+class CitationText(db.Model, UniqueMixin):
+    __tablename__ = 'api_citation_text'  # if you use base it is obligatory
+    id = Column(Integer, primary_key=True)  # obligatory
+    citation_id = Column(Integer, ForeignKey("api_citation.id"))
+    abstract = Column(LargeBinary)
+    text = Column(LargeBinary)
+
+    __table_args__ = (db.UniqueConstraint('citation_id'),)
+
+    def __call__(self):
+        return {
+            'id': self.id,
+            'citation_id': self.citation_id,
+            'abstract': self.abstract.decode(encoding='utf-8'),
+            'text': self.text.decode(encoding='utf-8')
+        }
+
+    def unique_hash(self, *arg, **kws):
+        return (kws['citation_id'])
+
+    def unique_filter(self, query, *arg, **kws):
+        return query \
+            .filter(self.citation_id == kws['citation_id'])
 
 from sqlalchemy.sql import func
 
@@ -93,22 +117,6 @@ class Citation(db.Model, UniqueMixin):
         return query \
             .filter(self.title == kws['title']) \
             .filter(self.url == kws['url'])
-
-class CitationText(db.Model, UniqueMixin):
-    __tablename__ = 'api_citation_text'  # if you use base it is obligatory
-    id = Column(Integer, primary_key=True)  # obligatory
-    citation_id = Column(Integer, ForeignKey("api_citation.id"))
-    abstract = Column(LargeBinary)
-    text = Column(LargeBinary)
-
-#    __table_args__ = (UniqueConstraint('citation_i', 'url'),)
-
-    def unique_hash(self, *arg, **kws):
-        return (kws['citation_id'])
-
-    def unique_filter(self, query, *arg, **kws):
-        return query \
-            .filter(self.citation_id == kws['citation_id'])
 
 class Keyword(db.Model, UniqueMixin):
     __tablename__ = 'api_keyword'  # if you use base it is obligatory
