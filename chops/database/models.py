@@ -104,7 +104,8 @@ class Citation(db.Model, UniqueMixin):
             'academics_id': [a.id for a in self.academics],
             'title': self.title,
             'date_published': self.date_published.strftime("%d/%m/%Y"),
-            'keywords': [k.name for k in self.keywords]
+            'keywords': [k.name for k in self.keywords],
+            'url': self.url
         }
 
     def __str__(self):

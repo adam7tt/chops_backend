@@ -63,5 +63,6 @@ def get_academic_wordcloud(args):
                 .query(CitationText)\
                 .filter(CitationText.citation_id == args['id'])\
                 .all()
+    if len(ret) > 0:
         return jsonify({'result': process_word_count([r() for r in ret], min_ocurrences=args['min_ocurrences'], min_word_length=args['min_word_length'], limit=args['limit'])})
-    return []
+    return jsonify(ret)
