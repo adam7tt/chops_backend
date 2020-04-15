@@ -6,7 +6,8 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from marshmallow import Schema
 from chops.core.flask_extensions import db
-from chops.database.models import (Citation, Academic, Keyword)
+from chops.database.models import (Citation, CitationText, Academic, Keyword)
+from chops.utils.misc import process_word_count
 
 blueprint = Blueprint('citations', __name__)
 
