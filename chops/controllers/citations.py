@@ -20,9 +20,17 @@ citation_args = {
     'search': fields.Str()
 }
 
+wordcloud_args = {
+    'id': fields.Integer(),
+    'ids': fields.DelimitedList(fields.Integer(), delimiter=','),
+    'min_ocurrences': fields.Integer(missing=5),
+    'min_word_length': fields.Integer(missing=5),
+    'limit': fields.Integer(missing=50)
+}
+
 @blueprint.route('/', methods=['GET', 'POST'])
 @use_args(citation_args)
-def get_academic(args):
+def get_citations(args):
     ret = []
     if 'id' in args:
         ret = Citation.query.filter_by(id=args['id']).first()
@@ -43,3 +51,24 @@ def get_academic(args):
     else:
         ret = db.session.query(Citation).all()
         return jsonify([r() for r in ret])
+
+
+@blueprint.route('/wordcloud/', methods=['GET', 'POST'])
+@use_args(wordcloud_args)
+def get_citation_wordcloud(args):
+    ret = []
+    if 'id' in args:
+        ret = db.session \
+                .query(CitationText) \
+                .filter(CitationText.citation_id == args['id']) \
+                .all()
+    if 'ids' in args:
+        ret = (
+            db.session
+              .query(CitationText)
+              .filter(CitationText.citation_id.in_(args['ids']))
+              .all()
+        )
+    if len(ret) > 0:
+        return jsonify({'result': process_word_count([r() for r in ret], min_ocurrences=args['min_ocurrences'], min_word_length=args['min_word_length'], limit=args['limit'])})
+    return jsonify(ret)
