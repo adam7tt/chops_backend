@@ -68,5 +68,7 @@ def get_academic(args):
             .items
         return jsonify({'page': args['page'], 'results': [r() for r in ret]})
     else:
-        ret = db.session.query(Academic).all()
-        return jsonify([r() for r in ret])
+        ret = db.session.query(Academic) \
+                .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
+                .items
+        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
