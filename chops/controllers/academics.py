@@ -34,41 +34,26 @@ wordcloud_args = {
 @blueprint.route('/', methods=['GET', 'POST'])
 @use_args(academic_args)
 def get_academic(args):
-    ret = []
+    query = db.session.query(Academic)
     if 'id' in args:
-        ret = Academic.query.filter_by(id=args['id']).first()
-        return jsonify(ret())
+        query = query.filter_by(id=args['id']).first()
+        return jsonify(query())
     elif 'ids' in args:
-        ret = db.session.query(Academic).filter(Academic.id.in_(args['ids'])).all()
-        return jsonify([r() for r in ret])
-    elif 'name' in args:
-        ret = db.session.query(Academic) \
-                .filter(Academic.name.contains(args['name'])) \
-                .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
-                .items
-        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
-    elif 'keywords' in args:
-        kws = [kw.replace('+', ' ') for kw in args['keywords']]
-        ret = db.session.query(Academic) \
-                .join(Academic.citations) \
-                .join(Citation.keywords) \
-                .filter(Keyword.name.in_(kws)) \
-                .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
-                .items
-        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
-    elif 'department' in args or 'university' in args:
-        ret = db.session.query(Academic) \
-                .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
-                .items
-        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
+        query = query.filter(Academic.id.in_(args['ids'])).all()
+        return jsonify([r() for r in query])
     elif 'search' in args:
-        ret = db.session.query(Academic)\
-            .filter(Academic.name.contains(args['search']))\
-            .paginate(args['page'], api.config['POSTS_PER_PAGE'], False)\
+        query = query.filter(Academic.name.contains(args['search'])) \
+            .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
             .items
-        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
-    else:
-        ret = db.session.query(Academic) \
-                .paginate(args['page'], api.config['POSTS_PER_PAGE'], False) \
-                .items
-        return jsonify({'page': args['page'], 'results': [r() for r in ret]})
+        return jsonify({'page': args['page'], 'results': [r() for r in query]})
+
+    if 'name' in args:
+        query = query.filter(Academic.name.contains(args['name']))
+    if 'department' in args or 'university' in args:
+        pass
+    if 'keywords' in args:
+        kws = [kw.replace('+', ' ') for kw in args['keywords']]
+        query = query.join(Academic.citations).join(Citation.keywords).filter(Keyword.name.in_(kws))
+
+    query = query.paginate(args['page'], api.config['POSTS_PER_PAGE'], False).items
+    return jsonify({'page': args['page'], 'results': [r() for r in query]})
